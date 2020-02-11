@@ -1,0 +1,3 @@
+% for fitem in flist:
+{{ fitem.mtime }} | {{ str(fitem.size).ljust(fsize_column_width) }} | {{ fitem.ftext }}
+% end

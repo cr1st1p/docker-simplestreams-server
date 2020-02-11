@@ -1,0 +1,19 @@
+% if pipe:
+  % for fitem in flist:
+{{ fitem.ftext }}
+  % end
+% else:
+{{ '=' * 79 }}
+  % path = '/'.join(map(lambda ditem: ditem.dname, ancestors_dlist))
+{{ host }}/{{ path }}
+{{ '-' * 79 }}
+  % fsize_column_width = max(*map(lambda x: len(str(x.size)), flist), 4, 0)
+  % if any(map(lambda x: x.hidden, flist)):
+    % include('curl-filelist.html', flist=filter(lambda x: x.hidden, flist))
+  % end
+  % if any(map(lambda x: x.hidden, flist)) and any(map(lambda x: not x.hidden, flist)):
+{{ '-' * 79 }}
+  % end
+  % include('curl-filelist.html', flist=filter(lambda x: not x.hidden, flist))
+{{ '=' * 79 }}
+% end

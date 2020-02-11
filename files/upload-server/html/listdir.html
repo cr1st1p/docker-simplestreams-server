@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>hfs - {{ host }}</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/static/main.css">
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <script src="/static/jquery.min.js"></script>
+    <script src="/static/qrcode.js"></script>
+    <script src="/static/main.js"></script>
+  </head>
+  <body>
+    <h2>
+      <a href="/">{{ host }}</a>
+% for ditem in ancestors_dlist:
+      <span>/</span>
+      <a href="{{ ditem.dpath }}">{{ ditem.dname }}</a>
+% end
+    </h2>
+    <div id="file-browser">
+% if any(map(lambda x: x.hidden, flist)):
+      <div id="widget-show-hidden-files" class="widget widget-show">[&#8594; show hidden files]</div>
+
+      <div id="hidden-files" class="hidden">
+        <div class="widget widget-hide" colspan="3">[&#8595; hide hidden files]</div>
+        <table><tbody>
+  % include('filelist.html', flist=filter(lambda x: x.hidden, flist))
+        </tbody></table>
+        <div class="widget widget-hide"><td>[&#8593; hide hidden files]</div>
+      </div>
+% end
+      <p>
+% include('filelist.html', flist=filter(lambda x: not x.hidden, flist))
+      </p>
+    </div>
+    <div id="qrcode"></div>
+    <hr>
+    <h2>Upload file:</h2>
+    <input type="file" id="file" name="upload" multiple>
+    <input id="curdir" type="hidden" value="{{ curdir }}">
+    <table id="pending-files">
+    </table>
+
+    <button id="btn-upload">Upload</button><br>
+    <div id="message"></div>
+  </body>
+</html>
+

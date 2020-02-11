@@ -1,0 +1,3 @@
+[submodule "dockerfile-lib"]
+	path = dockerfile-lib
+	url = https://github.com/cr1st1p/dockerfile-lib.git
