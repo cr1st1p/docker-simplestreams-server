@@ -49,7 +49,7 @@ As usual, via environment variables:
 
 Please configure your front proxy for big enough body sizes since you're uploading virtual images... You can see such a setting, in *example/*.yaml*, where we set nginx ingress controller to accept a body size of 10G.
 
-
+I strongly recommend adding authorization in that same front proxy layer - the file upload code is not battle tested so you should limit access to at least that part.
 
 ### Use as a remote for LXD
 
