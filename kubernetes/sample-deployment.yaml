@@ -1,0 +1,124 @@
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: simplestreams-server
+    chart: simplestreams-server-0.1
+    heritage: ddk8s
+    release: simplestreams-server
+  name: simplestreams-server
+  namespace: my-namespace
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: simplestreams-server
+    spec:
+      containers:
+      - env:
+        - name: DEBUG
+          value: '1'
+        image: docker.io/cr1st1p/simplestreams-server:0.1
+        name: simplestreams-server
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/www/simplestreams
+          name: data
+      securityContext:
+        fsGroup: 101
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: simplestreams-server
+
+---
+
+
+---
+apiVersion: v1
+data:
+  auth: cGxlYXNlLXJlcGxhY2UtbWU=
+kind: Secret
+metadata:
+  name: images.example.com
+  namespace: my-namespace
+
+---
+
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required - images.example.com
+    nginx.ingress.kubernetes.io/auth-secret: images.example.com
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/proxy-body-size: 10G
+  name: images.example.com
+  namespace: my-namespace
+spec:
+  rules:
+  - host: images.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: simplestreams-server
+          servicePort: 80
+        path: /
+  tls:
+  - hosts:
+    - images.example.com
+    secretName: cert-my-namespace
+
+---
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: simplestreams-server
+    chart: simplestreams-server-0.1
+    heritage: ddk8s
+    release: simplestreams-server
+  name: simplestreams-server
+  namespace: my-namespace
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5G
+  storageClassName: do-block-storage
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: simplestreams-server
+    chart: simplestreams-server-0.1
+    heritage: ddk8s
+    release: simplestreams-server
+  name: simplestreams-server
+  namespace: my-namespace
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 1080
+  selector:
+    app: simplestreams-server
+  type: ClusterIP
+
+---
+

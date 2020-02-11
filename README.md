@@ -47,10 +47,14 @@ As usual, via environment variables:
 
 
 
+Please configure your front proxy for big enough body sizes since you're uploading virtual images... You can see such a setting, in *example/*.yaml*, where we set nginx ingress controller to accept a body size of 10G.
+
+
+
 ### Use as a remote for LXD
 
 ```shell
-lxc remote add my_remote https://...your_server
+lxc remote add my_remote https://...your_server --protocol=simplestreams
 lxc image list my_remote:
 ```
 
@@ -98,4 +102,17 @@ lxc image list my_remote:
 
 
 For an image created from a container, when you do an ```lxc image export fingerprint``` you will obtain a single TAR file. This one contains both metadata and the image content itself. You'll have to manually create an lxd.tar.xz file out of it, without the rootfs/ directory, and a root.tar.xz with the content from rootfs/ 
+
+
+
+### Kubernetes install
+
+A sample yaml file can be found in kubernetes/ directory.
+
+It is not functional without editing some things in it, like:
+
+- namespace field
+- domain name
+- ingress secret ref and secret name
+- persistent storage class name
 
